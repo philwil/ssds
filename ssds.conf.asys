@@ -1,4 +1,4 @@
-action:set_name:name:Delta SM3300:
+action:set_name:name:ASYS SM3300:
 action:set_vers:name:0.0.1:
 class:Settings:action:create_class:id:1:
 class:Settings:action:create_field:field:Backlight:type:int:id:1:

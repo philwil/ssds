@@ -58,7 +58,7 @@ clean:
 
 romfs:
 	$(ROMFSINST) /bin/ssds_server
-	$(ROMFSINST) ssds.conf.delta /etc/ssds.conf
+	$(ROMFSINST) ssds.conf.asys /etc/ssds.conf
 	$(ROMFSINST) -d ssds_cgi /home/html/cgi-bin/ssds_cgi.cgi
 	$(ROMFSINST) /bin/ssds_client_test
 	$(ROMFSINST) /bin/ssds_user_test
@@ -67,7 +67,7 @@ romfs:
 install:
 	mkdir -p /home/html/ssds
 	cp ${VDIR}/*.txt /home/html/ssds
-	cp ${VDIR}/ssds.conf.delta /etc/ssds.conf
+	cp ${VDIR}/ssds.conf.asys /etc/ssds.conf
 	mkdir -p /etc/ssds
 	cp ${VDIR}/boa.conf.x86 /etc/ssds/boa.conf
 	mkdir -p /home/html/cgi-bin

@@ -51,7 +51,7 @@ clean:
 
 romfs:
 	$(ROMFSINST) /bin/ssds_server
-	$(ROMFSINST) ssds.conf.delta /etc/ssds.conf
+	$(ROMFSINST) ssds.conf.asys /etc/ssds.conf
 	$(ROMFSINST) -d ssds_cgi /home/html/cgi-bin/ssds_cgi.cgi
 	$(ROMFSINST) /bin/ssds_client_test
 	$(ROMFSINST) /bin/ssds_user_test
