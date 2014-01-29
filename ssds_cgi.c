@@ -404,7 +404,7 @@ int do_file(char *donesp, char *sp, int bytes, int dbfd)
   struct ctx *ctxp;
   struct ctx *last_ctxp;
   int done;
-  char *cursp;
+  //char *cursp;
   char *xsp;
   char *qsp;
   char qname[64];
@@ -413,7 +413,7 @@ int do_file(char *donesp, char *sp, int bytes, int dbfd)
   done = 0;
   toknum = 0;
   ctxnum = 0;
-  cursp = sp;
+  //cursp = sp;
 
   /* clear stack */
   ctx_push(-1);
@@ -881,6 +881,9 @@ int find_tokens(char *sp, int bytes)
 	   */
 	  tokp->is_start = 1;
 	  lctxp = tokp->last_ctxp = &ctx[cur_ctx];
+	  if(! lctxp) {
+	    printf(" Class lctxp is NULL !!\n");
+	  }
           ctx_push(cur_ctx);
           num_ctx++;
 	  cur_ctx = num_ctx;
@@ -1133,6 +1136,9 @@ int main(int argc, char *argv[])
    * process opts
    */
   pnum = get_post(argc, argv);
+  if(pnum < 0) {
+    printf(" Error in pnum %d\n", pnum);
+  }
   qnum = do_query();
   qsp =find_query("ssds_host", qnum);
   if(qsp) query_node_addr=qsp;

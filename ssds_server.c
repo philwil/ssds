@@ -133,12 +133,12 @@ int poll_add_clients(struct pollfd *fds, int num, int max)
 
 int do_serv(int serv_sock)
 {
-  int ret;
+  //int ret;
   int cli_sock, cli_len;
   struct sockaddr_in cli_addr;
   struct ssds_client *new_cli;
 
-  ret = 0;
+  //ret = 0;
   cli_len = sizeof(cli_addr);
   cli_sock = accept(serv_sock,
 		    (struct sockaddr *) &cli_addr,
@@ -153,7 +153,7 @@ int do_serv(int serv_sock)
 
   if (!new_cli) {
     fprintf(stderr, " Unable to get client, exiting\n");
-    ret =  -1;
+    //ret =  -1;
   }
   new_cli->cli_addr = cli_addr;
   return new_cli->idx;

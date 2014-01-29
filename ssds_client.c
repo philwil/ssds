@@ -222,6 +222,8 @@ int test_ssds(int fd)
 
   sprintf(sbuf,"msg 5678:action:get_classes:");
   res = ssds_send(fd, sbuf, rbuf);
+  if (res < 0)
+    printf(" Client res error %d \n", res);
 
   argc = get_argc(rbuf, argv, 16);
   ret = get_arg_int(argc, argv, "reply", &num);
@@ -230,6 +232,8 @@ int test_ssds(int fd)
   for (i=0; i<num; i++) {
     sprintf(sbuf,"msg 5678:action:get_class_num:num:%d:",i);
     res = ssds_send(fd, sbuf, rbuf);
+    if (res < 0)
+      printf(" Client res error %d \n", res);
     argc = get_argc(rbuf, argv, 16);
     get_arg_char(argc, argv, "class", myclass, 32);
     ret = get_arg_int(argc, argv, "id", &id);
@@ -237,12 +241,17 @@ int test_ssds(int fd)
       printf(" Client class name (%s) id %d \n", myclass, id);
       sprintf(sbuf,"msg 5678:action:get_fields:id:%d:",id);
       res = ssds_send(fd, sbuf, rbuf);
+      if (res < 0)
+	printf(" Client res error %d \n", res);
+
       argc = get_argc(rbuf, argv, 16);
       get_arg_char(argc, argv,"class", myclass, 32);
       ret = get_arg_int(argc, argv,"reply", &fields);
 
       sprintf(sbuf,"msg 5678:action:get_items:id:%d:", id);
       res = ssds_send(fd, sbuf, rbuf);
+      if (res < 0)
+	printf(" Client res error %d \n", res);
       argc = get_argc(rbuf, argv, 16);
       get_arg_char(argc, argv,"class", myclass, 32);
       ret = get_arg_int(argc, argv,"reply", &items);
@@ -317,6 +326,8 @@ int setup_ssds_client(int argc, char *argv[])
 
   sprintf(sbuf, "msg 5678:action:hello:");
   res = ssds_send(client_fd, sbuf, rbuf);
+  if (res < 0)
+    printf(" Client res error %d \n", res);
 
   return client_fd;
 }
@@ -334,8 +345,14 @@ int ssds_num_classes(int fd)
   argv = myargv;
   sprintf(sbuf,"msg 5678:action:get_classes:");
   res  = ssds_send(fd, sbuf, rbuf);
+  if (res < 0)
+    printf(" Client res error %d \n", res);
+
   argc = get_argc(rbuf, argv, 16);
   res  = get_arg_int(argc, argv, "reply", &num);
+  if (res < 0)
+    printf(" Client res error %d \n", res);
+
   //  printf(" Client num_classes is %d \n", num);
 
   return num;
@@ -354,8 +371,12 @@ int ssds_num_fields(int fd, int class_num)
   argv = myargv;
   sprintf(sbuf,"msg 5678:action:get_fields:class_num:%d:",class_num);
   res = ssds_send(fd, sbuf, rbuf);
+  if (res < 0)
+    printf(" Client res error %d \n", res);
   argc = get_argc(rbuf, argv, 16);
   res  = get_arg_int(argc, argv, "reply", &num);
+  if (0 && res < 0)
+    printf(" Client res error %d \n", res);
   if(0)
     printf("ssds_client.c:ssds_num_fields rbuf (%s) argc %d num %d\n",
 	   rbuf, argc, num);
@@ -375,16 +396,26 @@ int ssds_get_name(int fd, char *sp, char *name)
   if(name) {  // set_name
     sprintf(sbuf,"msg 5678:action:set_name:name:%s:", name);
     res = ssds_send(fd, sbuf, rbuf);
+    if (res < 0)
+      printf(" Client res error %d \n", res);
+
     argc = get_argc(rbuf, argv, 16);
     res  = get_arg_char(argc, argv, "reply", sp, 32);
+    if (0 && res < 0)
+      printf(" Client res error %d \n", res);
     if(0)
       printf("ssds_client.c:ssds_get_name Set to (%s)\n",
 	     name);
   } else {
     sprintf(sbuf,"msg 5678:action:get_name:");
     res = ssds_send(fd, sbuf, rbuf);
+    if (res < 0)
+      printf(" Client res error %d \n", res);
+
     argc = get_argc(rbuf, argv, 16);
     res  = get_arg_char(argc, argv, "name", sp, 32);
+    if (0 && res < 0)
+      printf(" Client res error %d \n", res);
     if(0)
       printf("ssds_client.c:ssds_get_name Found (%s)\n",
 	     sp);
@@ -405,16 +436,25 @@ int ssds_get_vers(int fd, char *sp, char *name)
   if(name) {  // set_vers
     sprintf(sbuf,"msg 5678:action:set_vers:name:%s:", name);
     res = ssds_send(fd, sbuf, rbuf);
+    if (res < 0)
+      printf(" Client res error %d \n", res);
     argc = get_argc(rbuf, argv, 16);
     res  = get_arg_char(argc, argv, "reply", sp, 32);
+    if (0 && res < 0)
+      printf(" Client res error %d \n", res);
     if(0)
       printf("ssds_client.c:ssds_get_vers Set to (%s)\n",
 	     name);
   } else {
     sprintf(sbuf,"msg 5678:action:get_vers:");
     res = ssds_send(fd, sbuf, rbuf);
+    if (res < 0)
+      printf(" Client res error %d \n", res);
+
     argc = get_argc(rbuf, argv, 16);
     res  = get_arg_char(argc, argv, "name", sp, 32);
+    if (0 && res < 0)
+      printf(" Client res error %d \n", res);
     if(0)
       printf("ssds_client.c:ssds_get_vers Found (%s)\n",
 	     sp);
@@ -435,8 +475,13 @@ int ssds_num_items(int fd, int class_num)
   argv = myargv;
   sprintf(sbuf,"msg 5678:action:get_items:class_num:%d:",class_num);
   res = ssds_send(fd, sbuf, rbuf);
+  if (res < 0)
+    printf(" Client res error %d \n", res);
+
   argc = get_argc(rbuf, argv, 16);
   res  = get_arg_int(argc, argv, "reply", &num);
+  if (0 && res < 0)
+    printf(" Client res error %d \n", res);
 
   return num;
 }
@@ -454,10 +499,14 @@ int ssds_class_name(int fd, int class_num, char *sp)
   argv = myargv;
   sprintf(sbuf,"msg 5678:action:get_fields:class_num:%d:",class_num);
   res = ssds_send(fd, sbuf, rbuf);
+  if (res < 0)
+    printf(" Client res error %d \n", res);
   if(client_debug)
     printf("ssds_class_name sent <%s> got <%s> res %d\n",&sbuf[8],rbuf,res);
   argc = get_argc(rbuf, argv, 16);
   res = get_arg_char(argc, argv,"class", sp, 32);
+  if (0 && res < 0)
+    printf(" Client res error %d \n", res);
   return res;
 }
 
@@ -522,20 +571,24 @@ int ssds_field_type(int fd, int class_num, int field_num, char *sp)
 int ssds_do_action(int fd, char *sp_action, char *rsp)
 {
   int res;
-  char **argv;
-  char *myargv[16];
+  //char **argv;
+  //  char *myargv[16];
   char sbuf[256];
   int len;
 
-  argv = myargv;
+  //argv = myargv;
   len = strlen(sp_action);
   if(len > 240) {
     res = sprintf(rsp,"Action size %d too large \n",len);
+    if (res < 0)
+      printf(" Client res error %d \n", res);
     goto do_act_ret;
   }
   sprintf(sbuf,"msg 5678:%s",sp_action);
   if(client_debug) printf("ssds_do_action sending (%s)",sbuf);
   res = ssds_send(fd, sbuf, rsp);
+  if (res < 0)
+    printf(" Client res error %d \n", res);
   if(client_debug) printf("ssds_do_action reply len %d buf (%s)", res, rsp);
  do_act_ret:
   return res;
@@ -651,6 +704,8 @@ int ssds_cgi_new_field(int fd,
   }
   ret = ssds_send(fd, sbuf, rbuf);
   argc = get_argc(rbuf, argv, 16);
+  if (0 && argc < 0)
+    printf(" Argc error %d\n", argc);
   return ret;
 }
 
@@ -673,6 +728,8 @@ int ssds_cgi_new_item(int fd, char *classsp, char *namesp, char *idsp)
   }
   ret = ssds_send(fd, sbuf, rbuf);
   argc = get_argc(rbuf, argv, 16);
+  if (0 && argc < 0)
+    printf(" Argc error %d\n", argc);
   return ret;
 }
 
@@ -694,6 +751,8 @@ int ssds_cgi_new_class(int fd, char *classsp, char *idsp)
   }
   ret = ssds_send(fd, sbuf, rbuf);
   argc = get_argc(rbuf, argv, 16);
+  if (0 && argc < 0)
+    printf(" Argc error %d\n", argc);
   return ret;
 }
 
@@ -860,6 +919,9 @@ int fill_ssds(int client_fd)
     pclass =
       ssds.classes[i] =(struct db_class *)malloc(sizeof(struct db_class));
     res = ssds_class_data(ssds.classes[i], client_fd, i);
+    if(res < 0) 
+      printf(" Client res error %d\n", res);
+
     printf("...[%d] Class %s id %d num_items %d num_fields %d\n"
 	   , i, pclass->name, pclass->id
 	   , pclass->num_items, pclass->num_fields);

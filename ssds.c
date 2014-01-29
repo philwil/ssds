@@ -679,9 +679,9 @@ void *ssds_get_item_num(struct ssds_class *pclass, int inum)
 void *xssds_get_item_num(struct ssds_class *pclass, int num)
 {
   struct ssds_item *item=NULL;
-  void * ret;
+  //void *ret;
 
-  ret = NULL;
+  //ret = NULL;
   if(pclass) {
     item = pclass->first_item;
     if(num < pclass->num_items) {
@@ -1745,7 +1745,7 @@ int ssds_action(int fd, char *lbuf, char *sbuf, void *cli)
   char * stype;
   char * svalue;
   char * soid;
-  char * sgroup;
+  //char * sgroup;
   char * sname;
   char * sitem;
   char * slen;
@@ -1762,7 +1762,7 @@ int ssds_action(int fd, char *lbuf, char *sbuf, void *cli)
   sfield  = NULL;
   saction = NULL;
   soid    = NULL;
-  sgroup  = NULL;
+  //sgroup  = NULL;
   sname   = NULL;
   sitem   = NULL;
   svalue  = NULL;
@@ -1815,7 +1815,7 @@ int ssds_action(int fd, char *lbuf, char *sbuf, void *cli)
     } else if(strcmp(argv[i], "oid") == 0) {
       soid = argv[i+1];i++;
     } else if(strcmp(argv[i], "group") == 0) {
-      sgroup = argv[i+1];i++;
+      //sgroup = argv[i+1];i++;
     } else if(strcmp(argv[i], "name") == 0) {
       sname = argv[i+1];i++;
     } else if(strcmp(argv[i], "item") == 0) {
@@ -1879,8 +1879,8 @@ int ssds_action(int fd, char *lbuf, char *sbuf, void *cli)
 	char mtmp[32];
 	oids = sscanf(soid,"%d %d %d",&oid1, &oid2, &oid3);
 	if(ssds->debug)
-	  printf(" SDCS oid1 %d oid2 %d oid3 %d\n"
-		 ,oid1, oid2, oid3);
+	  printf(" SDCS oid1 %d oid2 %d oid3 %d oids %d\n"
+		 ,oid1, oid2, oid3, oids);
         // use same code as sv.
         sprintf(mtmp,".%d.%d.%d", oid1, oid2, oid3);
 	set_action_val_name(mtmp, svalue, strlen(svalue)+1);
@@ -2663,13 +2663,13 @@ int ssds_action(int fd, char *lbuf, char *sbuf, void *cli)
       }
     }
     if(dfield && ditem) {
-      char *data;
-      int ftype;
-      int flen;
+      //char *data;
+      //int ftype;
+      //int flen;
 
-      data = get_item_data(dfield, ditem);
-      ftype=dfield->ftype;
-      flen=dfield->len;
+      //data = get_item_data(dfield, ditem);
+      //ftype=dfield->ftype;
+      //flen=dfield->len;
 
       ret = sprintf(sbuf,
 		 "rep 5555:action:%s:class:%s:item:%s:id:%d:field_id:%d:type:%d:value:",
@@ -2794,8 +2794,8 @@ int ssds_action(int fd, char *lbuf, char *sbuf, void *cli)
 	if(stype) {
 	  int ftype;
 	  int flen;
-          unsigned int bmask;
-          unsigned int bshift;
+          //unsigned int bmask;
+          //unsigned int bshift;
 
           if(sclass) {
 	    dclass = (struct ssds_class *)ssds_find_class_new(sclass, &new);
@@ -2816,8 +2816,8 @@ int ssds_action(int fd, char *lbuf, char *sbuf, void *cli)
 	    if(slen) sscanf(slen,"%d",&flen);
 	  } else if (strncmp(stype, "bit", 3) == 0) {
 	    ftype = SSDS_BIT;
-            bmask = get_field_bit(stype, 1, 0);
-            bshift = get_field_bit(stype, 0, 0);
+            //bmask = get_field_bit(stype, 1, 0);
+            //bshift = get_field_bit(stype, 0, 0);
 	  } else if (strcmp(stype, "str") == 0) {
 	    ftype = SSDS_STR;
 	    if(slen)sscanf(slen,"%d",&flen);

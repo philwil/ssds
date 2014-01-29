@@ -291,6 +291,9 @@ int ssds_get_gen_num(int pcfd, char *sdef, char *skey, char *rkey)
     printf("sending (%s) \n", sbuf);
   }
   res = ssds_send(pcfd, sbuf, rbuf);
+  if (res < 0 ) {
+    printf(" Error in send\n");
+  } 
   if(cl_db) {
     printf("got (%s) \n", rbuf);
   }
