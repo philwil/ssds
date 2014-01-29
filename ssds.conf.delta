@@ -1,0 +1,24 @@
+action:set_name:name:Delta SM3300:
+action:set_vers:name:0.0.1:
+class:Settings:action:create_class:id:1:
+class:Settings:action:create_field:field:Backlight:type:int:id:1:
+class:Settings:action:create_field:field:VoltageLimit:type:int:id:2:
+class:Settings:action:create_field:field:CurrentLimit:type:int:id:3:
+class:Settings:action:create_field:field:VoltageValue:type:int:id:4:
+class:Settings:action:create_field:field:CurrentValue:type:int:id:5:
+
+class:Settings:action:create_item:item:System:id:1:
+
+class:Test:action:create_class:id:2:
+
+class:Test:action:create_field:field:Field1:type:int:id:1:
+class:Test:action:create_field:field:Field2:type:int:
+class:Test:action:create_field:field:Field3:type:int:
+class:Test:action:create_field:field:Field4:type:int:
+
+class:Test:action:create_item:item:Test1:id:1:
+
+action:make_group:name:TestGroup:items:-1,gv.Test.Test1.Field1:
+action:make_group:name:TestGroup:items:1,gv.Test.Test1.Field1:
+action:make_group:name:TestGroup:items:1,gv.Settings.System.Backlight:
+

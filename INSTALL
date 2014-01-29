@@ -1,0 +1,140 @@
+
+# Installation details
+
+mkdir -p ~/work/ssds
+
+sudo mkdir -p /home/html/conf
+sudo mkdir -p /home/html/logs
+sudo mkdir -p /home/html/ssds
+sudo mkdir -p /home/html/cgi-bin
+
+# build the application
+make
+
+# install
+cp boa.conf /home/html/conf
+cp mime.types /home/html/conf
+cp ssds_cgi /home/html/cgi-bin/ssds_cgi.cgi
+
+
+
+# Run the server code
+./ssds_server > ssds_server.out 2>&1 &
+
+
+#Assume boa has been intalled if not
+mkdir -p ~/work/boa
+cd ~/work/boa
+wget http://www.boa.org/0.92/boa-0.92r.tar.gz
+tar xvzf boa-0.92r.tar.gz
+cd boa-0.92/src
+make
+cd ~/work/boa
+
+#Run boa as root
+sudo su
+boa-0.92/src/boa -c /home/html
+
+#local test
+cd ~/work/ssds
+
+#You can simulate the cgi action by setting the value of the QUERY_STRING
+
+#Sample get value*****************
+
+QUERY_STRING="file=./ssds_item_fields.txt&foo=myfoo\
+&action=action:get_item_value:class_num:0:field_num:0:item_num:0:\
+&set_class_num=0&set_item_num=1&quit=y" ./ssds_cgi
+
+Sample result******
+Content-type: text/html
+
+<html><head><title>CGI File</title></head><body>
+<H2>CGI File</H2>
+
+<H1>Action Sent</H1>
+<table border=1><tr><td><pre>
+action:get_item_value:class_num:0:field_num:0:item_num:0:
+</pre></td></tr></table>
+<H1>Action Result</H1>
+<pre>
+rep 1234:action:get_item_value:class:Alarms:item:Alarm1:id:1:field_id:5:type\
+:1:value:0:</pre></td></tr></table>
+
+
+
+Sample set value*****************
+
+QUERY_STRING="file=./ssds_item_fields.txt&foo=myfoo\
+&action=action:set_item_value:class_num:0:field_num:0:item_num:0:value:123:\
+&set_class_num=0&set_item_num=1&quit=y" ./ssds_cgi
+
+Sample result******
+
+Content-type: text/html
+
+<html><head><title>CGI File</title></head><body>
+<H2>CGI File</H2>
+
+<H1>Action Sent</H1>
+<table border=1><tr><td><pre>
+action:set_item_value:class_num:0:field_num:0:item_num:0:value:123:
+</pre></td></tr></table>
+<H1>Action Result</H1>
+<pre>
+rep 1234:action:set_item_value:class_num:0:item_num:0:field_num:0:result:OK:
+</pre></td></tr></table>
+
+Repeat get to check
+
+
+
+QUERY_STRING="file=./ssds_item_fields.txt&foo=myfoo\
+&action=action:get_item_value:class_num:0:field_num:0:item_num:0:\
+&set_class_num=0&set_item_num=1&quit=y" ./ssds_cgi
+
+Sample result******
+
+Content-type: text/html
+
+<html><head><title>CGI File</title></head><body>
+<H2>CGI File</H2>
+
+<H1>Action Sent</H1>
+<table border=1><tr><td><pre>
+action:get_item_value:class_num:0:field_num:0:item_num:0:
+</pre></td></tr></table>
+<H1>Action Result</H1>
+<pre>
+rep 1234:action:get_item_value:class:Alarms:item:Alarm1:id:1:field_id:5\
+:type:1:value:123:</pre></td></tr></table>
+
+#Note the value returned as 123.
+
+#Running web pages.
+
+
+#Point the browser to :
+
+http://localhost:8080/cgi-bin/ssds_cgi.cgi?file=ssds_classes.txt
+
+#to start viewing the classes
+
+#By contrast this will show the fields for a selected item in a class.
+
+http://localhost:8080/cgi-bin/ssds_cgi.cgi?file=ssds_item_fields.txt\
+&set_class_num=0&set_item_num=0
+
+#And this will set up one or more values
+
+http://localhost:8081/cgi-bin/ssds_cgi.cgi?set_field_0=422\
+&set_field_1=0.000000&set_field_2=0.000000&set_field_3=0.000000\
+&set_field_4=0.000000&file=ssds_item_fields.txt&set_class_num=0\
+&set_item_num=0&set_fields=1
+
+
+#You can change the values of set_class_num and set_item_num to
+#pick different items and different classes.
+
+Future versions of SSDS will allow set_field_name, set_class_name and
+set_item_name in this URL.

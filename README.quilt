@@ -1,0 +1,155 @@
+mkdir patches
+quilt new <patchfile>
+quild add <filename>
+
+quilt refresh
+
+quilt pop (remove patches)
+quilt push (add patches)
+
+$
+mkdir patches
+
+Then tell quilt to create a new patch called patch1:
+
+$
+quilt new patch1
+
+Patch patches/patch1 is now on top
+
+quilt needs to be told about all of the different files that will be modifed by this new patch. To do this, use the add command:
+
+$
+quilt add Makefile
+
+File Makefile added to patch patches/patch1
+
+Edit the file Makefile, modify the EXTRAVERSION line, and save the change. After you finish, tell quilt to refresh the patch:
+
+$
+quilt refresh
+
+Refreshed patch patches/patch1
+
+The file patches/patch1 will contain a patch with the changes that you have just made:
+
+$
+cat patches/patch1
+
+Index: linux-2.6.19/Makefile
+===================================================================
+--- linux-2.6.19.orig/Makefile
++++ linux-2.6.19/Makefile
+@@ -1,7 +1,7 @@
+ VERSION = 2
+ PATCHLEVEL = 6
+ SUBLEVEL = 19
+-EXTRAVERSION =
++EXTRAVERSION = -dirty
+ NAME=Crazed Snow-Weasel
+
+ # *DOCUMENTATION*
+
+You can continue on, working with this single patch, or create a new one to go on top of this patch. As an example, if three different patches had been created, patch1, patch2, and patch3, they will be applied one on top of one another.
+
+To see the list of patches that are currently applied:
+
+$
+quilt series -v
+
++ patches/patch1
++ patches/patch2
+= patches/patch3
+
+This output shows that all three patches are applied, and that the current one is patch3.
+
+If a new kernel version is released, and you wish to port your changes to the new version, quilt can handle this easily with the following steps:
+
+   1.
+
+      Pop off all of the patches that are currently on the tree:
+
+      $
+      quilt pop -a
+
+      Removing patch patches/patch3
+      Restoring drivers/usb/Makefile
+
+      Removing patch patches/patch2
+      Restoring drivers/Makefile
+
+      Removing patch patches/patch1
+      Restoring Makefile
+
+      No patches applied
+
+   2.
+
+      Using the official patch from kernel.org, move the old kernel version forward one release:
+
+      $
+      patch -p1 < ../patch-2.6.20
+
+      $
+      cd ..
+
+      $
+      mv linux-2.6.19 linux-2.6.20
+
+   3.
+
+      Now have quilt push all of the patches back on top of the new tree:
+
+      $
+      quilt push
+
+      Applying patch patches/patch1
+      patching file Makefile
+      Hunk #1 FAILED at 1.
+      1 out of 1 hunk FAILED -- rejects in file Makefile
+      Patch patches/patch1 does not apply (enforce with -f)
+
+   4.
+
+      As the first patch doesn't apply cleanly, force the patch to be applied and then fix it up:
+
+      $
+      quilt push -f
+
+      Applying patch patches/patch1
+      patching file Makefile
+      Hunk #1 FAILED at 1.
+      1 out of 1 hunk FAILED -- saving rejects to file Makefile.rej
+      Applied patch patches/patch1 (forced; needs refresh)
+      $
+      vim Makefile.rej Makefile
+
+   5.
+
+      After the patch is applied by hand, refresh the patch:
+
+      $
+      quilt refresh
+
+      Refreshed patch patches/patch1
+
+   6.
+
+      And continue on pushing the other patches:
+
+      $
+      quilt push
+
+      Applying patch patches/patch2
+      patching file drivers/Makefile
+
+      Now at patch patches/patch2
+      $
+      quilt push
+
+      Applying patch patches/patch3
+      patching file drivers/usb/Makefile
+
+      Now at patch patches/patch3
+
+quilt also has options that will automatically email out all of the patches in the series to a group of people or a mailing list, delete specific patches in the middle of the series, go up or down the series of patches until a specific patch is found, and many more powerful options.

@@ -1,0 +1,106 @@
+SDCS
+SSDS User interface
+
+Version 1.0 May 7, 2009
+
+
+Overview
+The User interface allows user code to interact with the SSDS system.
+
+The optional management structure is shown
+
+struct ssds_connect {
+	char ipaddr[32];
+	int port;
+        int fd;
+};
+
+
+
+
+The DataBase is first opened.
+
+   int ssds_open(NULL);
+
+You can then interrogate the database
+
+First you can get the name
+
+   int ssds_get_name(int pcfd, char *res, int rlen);
+   int ssds_get_vers(int pcfd, char *res, int rlen);
+
+Then find the number of classes in the database
+
+   int ssds_get_num_classes(int pcfd);
+
+Then get data about each class
+   int ssds_get_class_name(int pcfd, char *class_def, char *res, int rlen);
+   int ssds_get_class_num(int pcfd, char *class_def, char *res, int rlen);
+   int ssds_get_class_id(int pcfd, char *class_def, char *res, int rlen);
+
+   //TODO int ssds_get_num_class_fields(int pcfd, char *class_def);
+   //TODO int ssds_get_field_name(int pcfd,char *class_def, char *res, int rlen);
+   //TODO int ssds_get_field_num(int pcfd,char *class_def, char *field_def);
+   //TODO int ssds_get_field_id(int pcfd,char *class_def, char *field_def);
+
+You can create a field and set its type
+   int ssds_set_field_type(int pcfd,char *class_def,
+	char *type_def, char *res, int rlen);
+
+You can set the length of a string field
+   //TODO int ssds_set_field_len(int pcfd,char *class_def, int len,
+	 char *res, int rlen);
+
+You can see how many items there are in a class
+    int ssds_get_num_class_items(int pcfd, char *class_def,);
+
+You can get the item name this will decode 0.0.0
+    int ssds_get_item_name(int pcfd, char *class_def, char *res, int rlen);
+
+You can also get the ID and sequence number for any item.
+
+    int ssds_get_item_num(int pcfd,char *class_def, char *res, int rlen);
+    int ssds_get_item_id(int pcfd,char *class_def, char *item_def);
+
+You can also get the ascii value number for any item.
+    int ssds_get_item_value(int pcfd, char *item_def, char *reply, int len);
+
+You can also get the binary raw data for any item.
+     int ssds_get_item_value_bin(int pcfd, char *item_def, char *data,
+             int dlen, char *reply, int len);
+
+You can also set the ascii value for any item.
+    int ssds_set_item_value(int pcfd, char *item_def, char * data, int dlen,
+	                      char *reply, int rlen);
+
+You can also set the binary raw data for any item.
+    int ssds_set_item_value_bin(int pcfd,char *item_def, char *data, int dlen,
+	                      char *reply, int len);
+
+You can create a group of data items
+    int ssds_create_group(int pcfd, char *name, char *res, int rlen);
+
+You can add items to a group
+  NOTE prepend a '-' to the item name to reset the group
+      int ssds_add_list_item(int pcfd, char *name, char *item_def,
+                               char *reply, int rlen);
+
+You can find out the binary data size for a group
+      int ssds_get_group_len(int pcfd, char *list_name, char *reply, int rlen);
+
+You can get the ascii data for a group
+      int ssds_get_group_data(int pcfd, char *list_name,
+                                char *reply, int rlen);
+
+You can get the binary data for a group
+      int ssds_get_group_data_bin(int pcfd, char *list_name,
+                                char *data, int dlen, char *reply, int rlen);
+
+
+You can set the ascii data for a group
+      int ssds_set_group_data(int pcfd, char *list_name,
+                                char *reply, int rlen);
+
+You can set the binary data for a group
+      int ssds_set_group_data_bin(int pcfd, char *list_name,
+                                char *data, int dlen, char *reply, int rlen);

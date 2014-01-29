@@ -1,0 +1,81 @@
+@@blank html_header:title:foo@@
+<!--/*
+ * cgi_file
+ * reads a file into a char array ( we should use mmap I know )
+ * looks for keys
+ * -->
+<h1>Get Value/Name Test</h1>
+<ul>
+<li>name @@gn.0.0.01@@ id @@ign.0.0.01@@ num @@sgn.0.0.01@@ value @@gv.0.0.01@@
+<li>name @@gn.0.0.02@@ id @@ign.0.0.02@@ num @@sgn.0.0.02@@ value @@gv.0.0.02@@
+</ul>
+@@setgn.01.02.03@@
+<br> curr class num @@class_num@@ name @@class_name@@
+<br> curr field num @@field_num@@ name @@field_name@@
+<br> curr item num @@item_num@@ name @@item_name@@
+
+ <h2>Test System Start</h2>
+<a href="./ssds_cgi.cgi?file=ssds_classes.txt"> Look at classes</a>
+ <h2>Post Data</h2>
+
+<pre>
+@@post_data@@
+</pre>
+
+ <h2>Query Data</h2>
+<p> foo = @@query_foo@@
+ <h2>System Name @@sys_name@@ vers: @@sys_version@@ </h2>
+ <p>  We start here @@class_start@@
+ <p>  class name is <b>@@class_name@@</b> id:@@class_id@@ num:@@class_num@@
+ <p>  it has @@class_num_fields@@ fields
+ <p>  here are the classes
+ <ul>
+@@class_start@@
+<li>@@class_name@@ <br>Items are here
+   <ul>
+   @@class_items_start@@
+   <li>@@item_name@@
+   @@class_items_end@@
+</ul>
+@@class_end@@
+</ul>
+
+<tr><td>field name</td> <td>field id</td><td>field type</td><td>field num</td></tr>
+ <p>  here are the fields
+ <table border=1>
+<tr><td>field name</td> <td>field id</td><td>field type</td><td>field num</td></tr>
+@@class_fields_start@@
+ <tr><td>@@field_name@@</td><td>@@field_id@@</td><td>@@field_type@@</td><td>@@field_num@@</td></tr>
+ *  @@class_fields_end@@
+</table>
+<p> done with fields
+ <p>  class @@class_name@@ has @@class_num_items@@ items
+ *  here they are
+<table border =1>
+<tr><td>item name</td><td>item_id</td><td>class name</td><td>item num</td></tr>
+@@class_items_start@@
+<tr><td>@@item_name@@</td><td>@@item_id@@</td><td>@@item_class_name@@</td><td>@@item_num@@</td></tr>
+<tr >
+<td colspan=5>
+<table border=1>
+<tr><td>item field name</td><td>item_field_id</td><td>type</td><td>value</td></tr>
+@@item_fields_start@@
+<tr><td>@@item_field_name@@</td><td>@@item_field_id@@</td><td>
+ @@item_field_type@@</td><td> @@item_field_value@@</td></tr>
+@@class_item_fields_end@@
+</table></td></tr>
+@@class_items_end@@
+
+@@class_end@@ We should stop here
+</table></td></tr>
+<!--
+ *  @@items_start@@
+ *  item_name @@item_name@@ item_id @@item_id@@
+ *  @@items_end@@
+
+ *
+ *  we maintain a context stack based on start and end char
+ *  lets see how it goes
+ -->@@done@@
+
+@@html_tail:title:foo@@

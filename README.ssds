@@ -1,0 +1,567 @@
+
+System Design & Consulting Services, LLC
+
+Small System Data Server (SSDS)
+===============================
+
+
+The SSDS has been created to offer a solution to the
+needs to manage and distribute data on small embedded systems.
+
+Given a small embedded monitoring or control system that is network enabled,
+a Web Interface to the data can become a key component of the
+overall system design.
+
+
+The SSDS systen offers a way to provide the following:
+
+* lightweight, low overhead system (Server approx 64K)
+* lightweight, low overhead Web Page generator (CGI_generator approx 96K)
+* low runtime data requirements
+* flexible Web Page Generation via CGI
+* Distributed Data Server System
+* Multiple servers can be used
+* SNMP data interface
+* Simple User Application interface
+* int, float, string  or complex data types (easy to add others)
+* Direct interface to system GPIO's
+* Ability to define and extend the system Dynamically at run time
+* Save and Restore data states to persistent storage.
+* Direct Data interface (bypass Server)
+* Flexible Data Item Grouping system
+
+SSDS free
+---------
+
+The basic free version of SSDS includes all the features required to
+get the system up and running.
+The free system includes NO Support and is licensed under the GPL.
+System Design & Consulting Services, LLC reserve the right to upgrade
+and update the free system at any time.
+It can be used for any purposes as indicated by the GPLv2 License.
+There are certain limitations on the scope and capability of the free version.
+(
+ only 16 fields per class
+ simple class-item-field layout
+ no class inheritance
+ no complex fields
+ no group locking
+)
+
+A commercial version is available that will include support and
+additional features.
+Contact SDCS at www.sysdcs.com for more details.
+
+
+
+SSDS Operation
+--------------
+
+Any Network attached system can become a SSDS Server.
+The server can have one or more configuration files to define the system
+layout and initial data.
+
+
+Two memory areas are used in the system.
+One to define the System Definition Layout. The other to hold the data.
+
+Once a ssds server is running it can be asked to re create its definition
+files.
+
+A perfectly valid system can be set up with no actual initial layout
+definition.
+Users can define data items and classes as needed via the socket
+interface.
+One key feature of the system is its ability to define items dynamically.
+Once a class has been defined, simply attempting to write data to an
+item/field will create the item if it has not already been defined.
+Attempting to view a class/field combination will cause that field
+(and class) to be defined in the Layout.
+
+
+A "simple" user interface is provided to allow the Data Layout to be set up
+and modified and data values to be set, viewed via the socket interface.
+
+An extension to the system will allow "direct access" to the data items
+via shared memory.
+This "direct access" will bypass most of the serialization or data locking.
+Data Group locks can still be used to provide some sort of basic lock.
+
+
+The server ip address a client will use to contact a server can be set up by
+the environment variables SSDS_IPADDR and SSDS_PORT
+
+The server's ip address can be set up by
+the environment variables SSDS_SRV_IPADDR and SSDS_PORT.
+
+
+
+SSDS Data Components
+--------------------
+
+The basic concept of SSDS is to define data components or "items".
+An item is a member of a data "class".
+The data "class" defines the "fields" or individual data elements.
+A data element is a field within an item. The item's class defines the fields.
+These fields can be either a simple value (int, float or string) or
+a more complex data item.
+
+A more complex data item is instance of another class.
+Once a class is used in an field definition it cannot be used as a lower
+level field definition. This is to prevent circular definition problems.
+
+
+The layout defines classes, fields and items.
+
+class
+  fields
+     field1   type
+     field2   type
+     field3   type
+     field4   type
+     ..
+     fieldnn  type
+
+  items
+     item1
+     item2
+     item3
+     item4
+     ..
+     itemnn
+
+
+Currently it is a compile time option to select the maximum number of
+classes and  items or fields in each class.
+
+Thus the basic definition of a data component contains a class name
+and an item
+name.
+
+   Class_name.Item_name
+
+example
+   Alarms.ComputerRoomTemp
+
+
+For example given an item of the Alarms class the user will have defined
+some data fields to be associated with item associated with the class.
+
+   Alarms..AlarmValue[float]
+   Alarms..LowLimit[float]
+   Alarms..HighLimit[float]
+   Alarms..Status[int]
+
+Any instance of the Alarms class such as the ComputerRoomTemp (CRTemp) will
+have all the data fields associated with the Alarms class created at the same
+time as the instance is created.
+
+Thus the command to create an item Alarms.CRTemp will actually create
+ data elements for each of the following fields of the Alarms class.
+
+
+   Alarms.CRTemp.AlarmValue
+   Alarms.CRTemp.LowLimit
+   Alarms.CRTemp.HighLimit
+   Alarms.CRTemp.Status
+
+Once created, applications can set or recover data from any value using the
+server interface (or the direct data interface)
+
+
+A feature will also create a class/field of the correct type
+just by writing a data item value to a single field.
+
+Examples
+
+set_value:NewClass.NewItem.FirstField:value:0:
+
+         Will assume an integer field
+         The class / field and item will be created.
+
+set_value:NewClass.NewItem1.NextField:value:0.1:
+
+         Will assume a float field
+         The field and item will be created.
+         ( NewItem will also have the new field added to it.)
+
+set_value:NewClass.NewItem2.AnotherField:value:this is a string   :
+
+         Will assume a string field
+         The field and item will be created.
+         ( NewItem and NewItem1 will also have the new field added to it.)
+
+[STILL TODO]
+NOTE
+Setting the first value to a new field in a class will also set the default
+value for that field.
+
+
+Item Identification
+-------------------
+
+In addition to the actual names given to data items each
+class, item, field  has two other means of identification.
+
+A data ID ranges from 1 to 65,535. Each class, field and instance is given
+an ID. The ID can be set by the user. They should be unique within the
+Class, Field and Items. For example
+
+ Alarms.1.2 is a valid data item where
+	the ID for the CRTemp item is 1
+	the ID for  LowLimit is 2
+
+Once Defined, these ID's are not normally changed by the user. They can be
+defined by the user as each component is defined.
+Each class must have a unique ID but fields and items within each class have
+their own ID which can have the same value in fields and items.
+
+
+A data sequence number is primarily used internally for navigating through
+lists of items. The data sequence is defined by the system as the Class,
+Field or Item is generated.
+These numbers are recognised by the system by a leading '0' in the item
+identifaction. If a sequence number of 0 is used it can be just a single '0'
+
+
+
+So if there are 4 classes defined in a system the first field of first item
+in each class can be recovered as follows.
+
+  00.00.00 or 0.0.0
+  01.00.00
+  02.00.00
+  03.00.00
+
+The system will understand any mixture of names, IDs and numbers.
+
+Consider the following layout
+
+Class  name Alarms num 0 ID 1
+
+   Fields
+         name       num    ID  type   len
+         AlarmValue 00     1   float  4
+         HighLimit  01     3   float  4
+         LowLimit   02     2   float  4
+         Status     03     6   int    4
+   Items
+         name       num    ID
+         CRTemp     00     21
+         OfficeTemp 01     12
+
+
+Class  name DoorSensors num 1 ID 3
+   Fields
+         name       num    ID  type   len
+         PartNo     00     2   string 32
+         Status     01     6   int    4
+
+   Items
+         CRDoor     00    14
+         EntryDoor  01    25
+
+Class  name WindowSensors num 1 ID 3
+   Fields
+         name       num    ID  type   len
+         PartNo     00     2   string 32
+         Status     01     6   int    4
+
+   Items
+         CRWindow10 00    10
+         CRWindow11 01    11
+         Entry12    02    12
+         BackOffice 03    14
+
+
+Given this layout the following definitions are valid.
+1.12.2           = Alarms.OfficeTemp.LowLimit       defined by ID
+00.01.02           = Alarms.OfficeTemp.LowLimit       defined by number
+3.24.6             = WindowSensors.BackOffice.Status  defined by ID
+DoorSensors.00.2   = DoorSensors.CRDoor.PartNo        defined by name.num.ID
+
+
+This definition method provides a very flexible means for
+user applications to navigate the system layout and identify components.
+
+The addition of the ID also allows a fast conversion from the system to
+SNMP (Simple Network Management Protocol) identification.
+
+
+SSDS Data Groups
+================
+
+
+A really powerful feature of the system is the concept of data groups.
+Any number of data items can be configured as part of a group.
+
+There can be many groups.
+A data item can be a member  of one or many groups.
+A group will be given a name.
+A group can be local to a client connection or common to all
+clients.
+
+If the name starts with a '0' the group is on the server and is shared by all
+clients.
+
+
+The "command" to create a group is quite simple
+
+make_group:name:[0]MyGroup:items:n,item1,item1,item3:
+
+
+If "n" is negative the group membership is reset.
+If "n" is positive then "n" items are added to the group.
+
+Data from a group can be retrieved using a single command
+
+get_group_bin:name:MyGroup:
+
+When calling this using the API function a data space for the data must be
+provided.
+The client/server interface will then read the data into a binary structure for use by the application.
+In addition a "lock" attribute can be added to the "get_group" command.
+
+get_group_bin:name:MyGroup:lock:read: - no one else can read the data
+get_group_bin:name:MyGroup:lock:write: - no one else can write the data
+get_group_bin:name:MyGroup:lock:both: - no one else can read or write the data
+
+There are equivalent "set_group" commands that will send data back to the
+group.
+
+[TODO]
+If the user attempts to get or set  the data from a locked group the api will
+return with a "locked" status.
+The user can specify a wait time (0 = wait forever) to put a limit on the wait.
+
+get_group_bin:name:MyGroup:lock:both:wait:3.5:
+          - take the lock if, possible, else wait for 3.5 seconds.
+
+NOTE that locking a group will also lock all the individual data items in
+a group.
+All other groups that refer to those data items are also "locked"
+A client can access all data items that it has locked even if they are
+in multiple groups.
+
+
+Using groups
+------------
+
+A typical application that wants to interact with the data server will
+typically define one or more input data groups and one or more output
+data groups.
+
+The application will read and lock the all the groups used.
+Then read the data items in the Input groups. At that time
+the locks can be removed from all the input groups.
+The data is read into a compact data structure.
+
+The input data is  then processed by the application and data is written into
+output data group structures.
+
+Finally the output groups are written and the groups unlocked.
+[TODO]
+  An unlock all command will release all groups owned by a client)
+
+This process evectively provides a distributed data lock for the data system.
+
+
+
+
+CGI interface
+=============
+
+One of the most important components of the SSDS system is its ability to
+provide a
+flexible method for defining template web pages that can be processed by a
+built-in  interpreter to provide a web based interface to the SSDS data.
+
+The objective of this component is to provide a highly user customizable
+web interface while allowing simple access to the data server.
+Normally this sort of capabliity is provided by much more sophisitcated
+and larger systems that may not be best suited to small footprint embedded
+systems.
+
+System designers can now get access to their data without the need for
+"Large System" databases, Perl, PHP etc. Not that these other systems are
+a problem but they may be an overkill for embedded use.
+(The executible size for PHP may well equal the total kernel and file
+system size -less PHP for some systems).
+
+The designer can also quickly adapt to the smaller system and have access to
+all the data source for the product with a "simple" task rebuild from sources.
+The SSDS uses only simple system features and may well work on very small
+systems (like u-boot bootloader only systems).
+
+The CGI interface uses a dynamic key word substitution method to produce
+actual web page content from template files.
+Keys are contained in between  '@@' character pairs. Any keys not
+regognised by system are simply passed to the output.
+
+The system is dynamic in that the key word substitution can vary as the
+page is generated.
+The system also allows automatic looping or iteration over lists of items
+recovered from the SSDS.
+
+The following example shows how the SSDS is queried with output generated
+for each defined class.
+
+
+ <h2> Simple List of classes </h2>
+ <ul>
+@@class_start@@
+ <li>  class [@@class_num@@] name is <b>@@class_name@@</b> its id is <b>@@class_id@@</b>
+  it has @@class_num_fields@@ fields and @@class_num_items@@ items</li>
+@@class_end@@
+</ul>
+
+
+
+Here the
+
+   @@class_start@@
+
+keyword triggers a repeat of actions up to the
+
+   @@class_end@@
+
+keyword.
+
+Thie lines in between these keys are repeated with the values of
+
+   @@class_num@@
+   @@class_name@@
+   @@class_id@@
+
+dynamically changed for each pass of the loop.
+
+Class fields, items and fields in items can also be looped
+
+@@field_start@@  @@field_end@@
+@@item_start@@  @@item_end@@
+@@item_fields_start@@  @@item_fields_end@@
+
+In fact the following will display all the items in a SSDS system
+
+
+ <h2> SSDS System </h2>
+ <ul>
+@@class_start@@
+@@item_start@@
+@@ifield_start@@
+ <li>  @@class_name@@.@@item_name@@.@@item_field_name@@=@@item_field_value@@
+@@ifield_end@@
+@@item_end@@
+@@class_end@@
+</ul>
+
+Data Definitions
+----------------
+
+In a web template the user can access any SSDS item directly.
+The "gn." and "gv." keys trigger this operation.
+
+<li>name @@gn.1.12.2@@ value @@gv.1.12.2@@
+<li>name @@gn.00.01.02@@ value @@gv.00.01.02@@
+<li>name @@gn.Alarms.OfficeTemp.LowLimit@@ value @@gv.Alarms.OfficeTemp.LowLimit@@
+
+[TODO]
+
+A format and data selection fields will be added to this.
+
+@@gv.1.12.2:format:%3.2f:@@
+
+[TODO]
+@@gn.1.12.2:field:class_name:@@
+    any of these fields will work
+                                    class_name
+                                         _id
+                                         _num
+                                    item_name
+                                         _id
+                                         _num
+                                    field_name
+                                         _id
+                                         _num
+
+
+
+CGI GET and POST data
+---------------------
+
+
+The SSDS CGI system understands certain GET and POST data items.
+A new template file name can be defined in the Query String
+
+This example will cause the template file "ssds_class_fields.txt" to be
+processed.
+
+<a href="./ssds_cgi.cgi?file=ssds_class_fields.txt&set_class_num=@@class_num@@">@@class_name@@</a>
+
+
+The "set_class_num" instruction will cause the class number for the new
+template to be set up before the template is executed to produce the next
+web page.
+
+CGI FORMS
+---------
+
+
+A form can be set up to allow data to be entered from the web
+
+
+<p> Example GET form with values
+<form action=ssds_cgi.cgi method=GET>
+<table border=1>
+<tr><td>Field Name</td><td>Value</td></tr>
+@@item_fields_start@@
+<tr><td>@@item_field_name@@</td>
+<td><input type=text name=set_field_@@item_field_num@@
+  value=@@item_field_value@@></td></tr>
+@@item_fields_end@@
+</table>
+<input type=hidden name=file value=ssds_item_fields.txt>
+<input type=hidden name=set_class_num value=@@class_num@@>
+<input type=hidden name=set_item_num value=@@item_num@@>
+<input type=hidden name=set_fields value=1>
+<input type=submit value=submit>
+<input type=reset value=reset>
+
+</form>
+
+The input
+<input type=hidden name=set_fields value=1>
+
+        will trigger the SSDS action to write back data values when the
+        form is submitted.
+
+This interface includes the abliity to generate classes, fields and items
+from a web page.
+
+
+Dynamic XML
+-----------
+[TODO]
+A suitable template file can be defined to produce dynamic XML content.
+This can be triggered by calling the template file xxx.xml.
+A refresh on such a file can trigger dynamic data presentation if required.
+
+[TODO] A more complex demonstration for this will be added.
+
+
+SNMP
+----
+A special
+ssds_agent.c
+file is available for introduction into the
+net-snmp system build
+
+Given a minimal range of parameters this system will trigger the dynamic
+generation of SNMP data items from a running SSDS system.
+
+The class, item and field id's are used to create the MIB system layout.
+
+
+[TODO]
+ssds2mib.c
+can be used to generate mib files for the SSDS components.

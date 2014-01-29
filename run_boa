@@ -1,0 +1,4 @@
+#!/bin/sh
+# script to run boa on x86 or on target
+ ./boa -f /home/html/boa.conf -c /home/html
+

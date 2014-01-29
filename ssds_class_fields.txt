@@ -1,0 +1,46 @@
+<!--/*
+ * class_fields
+ * displays class fields with links
+ * relies on set_class_num=xx in query string
+ * -->
+ <h1>System Name @@sys_name@@ </h1>
+<p> More cgi examples
+ <h2> Class @@class_name@@ fields </h2>
+
+<p> First a simple list
+<ul>
+@@class_fields_start@@
+ <li>  field [@@field_num@@] name:<b>@@field_name@@</b>  id:<b>@@field_id@@</b>
+type:<b>@@field_type@@</b></li>
+@@classs_fields_end@@
+</ul>
+
+<h2>Add a field to this class</h2>
+<form action=ssds_cgi.cgi method=GET>
+<table border=1>
+<tr><td>Field Name</td><td>Type</td><td>Len</td><td>ID</td><td>Value</td></tr>
+<tr>
+<td><input type=text name=new_field_name value=""></td>
+<td><select name=new_field_type>
+<option value="float">float
+<option value="int">integer
+<option value="str">string
+</select>
+</td>
+<td><input type=text name=new_field_len value="4"></td>
+<td><input type=text name=new_field_id value=""></td>
+<td><input type=text name=new_field_value value=""></td>
+
+</tr>
+
+</table>
+<input type=hidden name=file value=ssds_class_fields.txt>
+<input type=hidden name=class_name value=@@class_name@@>
+<input type=hidden name=set_class_num value=@@class_num@@>
+<input type=hidden name=add_field value=1>
+<input type=submit value=submit>
+<input type=reset value=reset>
+
+</form>
+
+@@done@@

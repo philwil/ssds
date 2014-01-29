@@ -1,0 +1,210 @@
+SDCS
+SSDS Socket interface
+
+Version 1.0 May 5, 2009
+Version 1.1 May 7, 2009
+
+Overview
+
+
+The SSDS system allows a client process to communicate with the server to
+read and set data in database variables.
+
+The variables are organised by Class.Item.Field
+
+That is
+A named class has named fields of data types
+
+A named item is an instance of the class and inherits all the named fields.
+
+So we can have as an example
+    an Alarm class with low_limit and high_limit fields.
+
+An item Alarm1 will be an instance of the class so that the item fields
+
+Alarm.Alarm1.low_limit
+Alarm.Alarm1.high_limit
+
+Will be defined as soon as Alarm1 is defined as an instance of the Alarm class.
+
+The server will understand commands to get and set values, interrogate the
+database and also add classes, fields and items.
+
+Note that currently once a class has items you can no lnoger add fields to
+that class. (We may change that at sometime)
+
+
+
+
+
+
+In the first cut of the system, a form or web page generator scanned
+a template file for key words and then use database information to create web
+pages to allow the data to be manipulated.
+
+Essentially any element of the data base can be referred to by name , an ID
+or by a sequence number.
+
+The first class to be created has a sequence number of 0
+The second class to be created has a sequence number of 1 etc
+The first field to be added to a class has a sequence number of 0
+The second field to be added to a class has a sequence number of 1 etc
+The first item to be added to a class has a sequence number of 0
+The second item to be added to a class has a sequence number of 1 etc
+
+As long as they are unique, ID numbers can be set independently of the
+sequence number.
+
+All sequence numbers have a leading '0' to identify them.
+ID numbers have to be greater than '0'
+A single number of '0' or the combination of '00' represents the
+  sequence number 0.
+
+Thus an individual item can be referenced by
+
+class_num.item_num.field_num
+   (gv.0.0.0)
+or by
+
+class_id.item_id.field_id
+   (gv.1.1.1)
+
+or by
+
+class_name.item_name.field_name
+   (gv.Alarms.Alarm1.high_limit)
+
+Or any combination of the above
+
+
+Alarms.00.2
+
+Alarms.Alarm1.high_limit
+
+00.3.01
+
+given
+class Alarms ID 1 sequence 00
+    field high_limit ID 2 sequence 01
+    item Alarm1 ID 3 sequence 02
+
+ Could all point to the same thing.
+
+Some notes
+  Names cannot begin with a number
+  an ID cannot begin with 0
+  a sequence must always begin  with 0
+  Names cannot have the char "." embedded in them.
+
+So a command to get a value could be
+  gv.Alarms.1.01
+or to set a value
+  sv.Alarms.1.01=2.345
+
+Short form for these are:
+
+gv.1.3.2     Using id's
+gv.00.02.01  Using sequence numbers
+gv.Alarm.Alarm1.high_limit  Using indexes
+
+
+Other examples can retrieve information from the database
+
+gc    will return the number of classes
+      db:name:num_classes:4:
+
+gc.1  will return class information as follows
+       class:Alarms:id:1:num:00:num_items:3:num_fields:4:
+[
+   Also
+      gc.00
+      gc.Alarms
+]
+
+gf.1.2
+         will return field class:Alarms:field:high_limit:id:2:type:float:len:4:
+
+[
+
+  Also
+      gf.1.01
+      gf.1.high_limit
+      gf.1.2
+      gf.00.01
+      gf.00.high_limit
+      gf.00.2
+      gf.Alarms.high_limit
+      gf.Alarms.01
+      gf.Alarms.2
+]
+
+
+details of an item can also be revovered
+gi.1.3
+        will return item class:Alarms:item:Alarm1:data:0x123450:
+
+
+[
+
+  Also
+      gi-1.02
+      gi.1.Alarm1
+      gi.1.3
+      gi.00.02
+      gi.00.Alarm1
+      gi.00.3
+      gi.Alarms.Alarm1
+      gi.Alarms.02
+      gi.Alarms.3
+]
+
+
+The letter 'g' can be replaced by 's' to set an item value.
+The value is placed after an '=' character
+
+example
+
+  sv.1.3.2=123.0
+
+Groups
+
+The system can work with groups to get or set data
+the first element in the 'items' word is used to define the number of
+data sets to be defined for the group. This number is then followed
+by the item identifications.
+Example
+
+[action:]set_group:name:Agroup:items:3,i.0.0.0,i.0.0.1,i.0.0.2:
+
+
+
+
+Another example of setting up a group
+
+[action:]set_group:name:mygroup:items:3,i.1.3.0,i.1.3.1,i.1.3.2:
+
+reply
+
+action:set_group:name:mygroup:items:3,i.1.3.0,i.1.3.1,i.1.3.2:
+
+Examine a group
+
+action:show_group:name:mygroup:
+
+reply
+action:show_group:name:mygroup:num:3:items:i.1.3.0,i.1.3.1,i.1.3.2:
+
+
+Getting group values
+
+action:get_group:name:mygroup:
+
+reply
+action:get_group:name:mygroup:items:3,1.23,4.56,0.00:
+
+Setting group values
+
+action:set_group:name:mygroup:items:3,1.23:4.56:0.00:
+
+reply
+action:set_group:name:mygroup:items:3,1.23:4.56:0.00:

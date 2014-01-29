@@ -1,0 +1,110 @@
+<!--/*
+ * item_fields
+ * displays details of an item
+ * relies on set_class_num=xx set_item_num=xx in query string
+ * -->
+ <h1>System Name @@sys_name@@ </h1>
+<p> Item cgi examples
+ <h2> Class @@class_name@@ item @@item_name@@ </h2>
+<p>Class @@class_name@@ item @@item_name@@ has @@class_num_fields@@ fields </h2>
+<p> First a simple list
+<ul>
+@@item_fields_start@@
+ <li>  field [@@item_field_num@@] name:<b>@@item_field_name@@</b>  id:<b>@@item_field_id@@</b>
+value:<b>@@item_field_value@@</b></li>
+@@item_fields_end@@
+</ul>
+
+<p> Next a table with values
+<p>
+<table border=1>
+<tr><td>Field Name</td><td>Value</td></tr>
+@@item_fields_start@@
+<tr><td>@@item_field_name@@</td><td>@@item_field_value@@</td></tr>
+@@item_fields_end@@
+</table>
+
+<p> Next as a GET form with values
+<form action=ssds_cgi.cgi method=GET>
+<table border=1>
+<tr><td>Field Name</td><td>Value</td></tr>
+@@item_fields_start@@
+<tr><td>@@item_field_name@@</td><td><input type=text name=set_field_@@item_field_num@@ value=@@item_field_value@@></td></tr>
+@@item_fields_end@@
+</table>
+<input type=hidden name=file value=ssds_item_fields.txt>
+<input type=hidden name=set_class_num value=@@class_num@@>
+<input type=hidden name=set_item_num value=@@item_num@@>
+<input type=hidden name=set_fields value=1>
+<input type=submit value=submit>
+<input type=reset value=reset>
+
+</form>
+
+<p> Next as a POST form with values
+<form action=ssds_cgi.cgi method=POST>
+<table border=1>
+<tr><td>Field Name</td><td>Value</td></tr>
+@@item_fields_start@@
+<tr><td>@@item_field_name@@</td><td><input type=text name=set_field_@@item_field_num@@ value=@@item_field_value@@></td></tr>
+@@item_fields_end@@
+</table>
+<input type=hidden name=file value=ssds_item_fields.txt>
+<input type=hidden name=set_class_num value=@@class_num@@>
+<input type=hidden name=set_item_num value=@@item_num@@>
+<input type=hidden name=set_fields value=1>
+<input type=submit value=submit>
+<input type=reset value=reset>
+
+</form>
+<p>
+
+<h2>Add a field to this class</h2>
+<form action=ssds_cgi.cgi method=GET>
+<table border=1>
+<tr><td>Field Name</td><td>Type</td><td>Len</td><td>ID</td><td>Value</td></tr>
+<tr>
+<td><input type=text name=new_field_name value=""></td>
+<td><select name=new_field_type>
+<option value="float">float
+<option value="int">integer
+<option value="str">string
+</select>
+</td>
+<td><input type=text name=new_field_len value="4"></td>
+<td><input type=text name=new_field_id value=""></td>
+<td><input type=text name=new_field_value value=""></td>
+
+</tr>
+
+</table>
+<input type=hidden name=file value=ssds_item_fields.txt>
+<input type=hidden name=class_name value=@@class_name@@>
+<input type=hidden name=set_class_num value=@@class_num@@>
+<input type=hidden name=add_field value=1>
+<input type=submit value=submit>
+<input type=reset value=reset>
+
+</form>
+
+<h2>Add an item to this class</h2>
+<form action=ssds_cgi.cgi method=GET>
+<table border=1>
+<tr><td>Item Name</td><td>ID</td></tr>
+<tr>
+
+<td><input type=text name=new_item_name value=""></td>
+<td><input type=text name=new_item_id value=""></td>
+
+</tr>
+
+</table>
+<input type=hidden name=file value=ssds_item_fields.txt>
+<input type=hidden name=class_name value=@@class_name@@>
+<input type=hidden name=set_class_num value=@@class_num@@>
+<input type=hidden name=add_item value=1>
+<input type=submit value=submit>
+<input type=reset value=reset>
+</form>
+
+@@done@@

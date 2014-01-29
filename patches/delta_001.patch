@@ -1,0 +1,19 @@
+Index: ssds/ssds_cgi.c
+===================================================================
+--- ssds.orig/ssds_cgi.c	2010-10-04 02:38:18.000000000 -0400
++++ ssds/ssds_cgi.c	2010-10-04 02:39:56.974199000 -0400
+@@ -381,12 +381,12 @@
+ 
+   donesp += sprintf(donesp,"<H1>Action Sent</H1>\n");
+   donesp += sprintf(donesp,"<table border=1><tr><td><pre>\n");
+-  donesp += sprintf(donesp, actsp);
++  donesp += sprintf(donesp, "%s", actsp);
+   donesp += sprintf(donesp,"</pre></td></tr></table>\n");
+ 
+   donesp += sprintf(donesp,"<H1>Action Result</H1>\n");
+   donesp += sprintf(donesp,"<pre>\n");
+-  donesp += sprintf(donesp, ressp);
++  donesp += sprintf(donesp, "%s", ressp);
+   donesp += sprintf(donesp,"</pre></td></tr></table>\n");
+   ret = donesp - mysp;
+   return ret;

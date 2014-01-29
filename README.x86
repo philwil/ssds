@@ -1,0 +1,73 @@
+README.x86
+SDCS Oct 13, 2010
+
+Running a copy of ssds on the x86 host
+
+Firstly you can build and run the fill SSDS system on your X86 host
+
+If your uClinux Directory is here 
+/home/student/work/uClinux-dist
+
+Change directory to  
+/home/student/work/
+
+make a ssds directory
+
+mkdir -p /home/student/work/ssds
+
+and copy Makefile.ssds to this directory
+
+/home/student/work/uClinux-dist/user/ssds/Makefile.ssds /home/student/work/ssds
+
+If you want to use different directories look at the head of the 
+
+Makefile.ssds
+
+file
+
+having done this
+
+   make clean all
+
+will build ssds
+
+make install
+will install ssds
+
+   make clean_boa boa
+
+will build boa
+
+THere will ba a run_boa script in the 
+
+/home/student/work/ssds
+
+directory
+
+That should run the x86 version of boa
+
+and 
+
+http://localhost:8080/cgi_bin/ssds_cgi.cgi
+
+should get you started.
+
+NOTE you can redirect the x86 system to point to a remote (blackfin) target
+look in boa.conf.x86
+
+Change these fields to allow the ssds server to reside on a remote node
+
+#CGIEnv  SSDS_IPADDR 127.0.0.1
+#CGIEnv  SSDS_PORT 4321
+
+OR add the following to the query string as needed
+ssds_host=10.1.0.181
+ssds_port=4400
+
+http://localhost:8080/cgi_bin/ssds_cgi.cgi?ssds_host=10.1.0.181
+   (&ssds_port=4400)
+
+But this will not persist through other queries / screens
+
+( I may be able to fix that !!! )
+

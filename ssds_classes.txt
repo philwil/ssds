@@ -1,0 +1,60 @@
+<!--/*
+ * classes
+ * displays classes with links
+ * -->
+ <h1>System Name:@@sys_name@@ vers:@@sys_version@@ </h1>
+<p> Some cgi examples
+ <h2> Simple List of classes </h2>
+ <ul>
+@@class_start@@
+ <li>  class [@@class_num@@] name is <b>@@class_name@@</b> its id is <b>@@class_id@@</b>
+  it has @@class_num_fields@@ fields and @@class_num_items@@ items</li>
+@@class_end@@
+</ul>
+
+ <h2> Simple Table of classes </h2>
+<table border=1>
+<tr><td>Class Num</td><td>Name</td><td>id</td><td>num fields</td><td>num items</td></tr>
+@@class_start@@
+<tr><td>@@class_num@@</td><td>@@class_name@@</td><td>@@class_id@@</td><td>@@class_num_fields@@</td><td>@@class_num_items@@</td></tr>
+@@class_end@@
+
+</table>
+
+ <h2> Table of classes with links</h2>
+<p> Click on <b>num fields</b> to see fields for the class
+<p> Click on <b>num items</b> to see items for the class
+
+<table border=1>
+<tr><td>Class Num</td><td>Name</td><td>id</td><td>num fields</td><td>num items</td></tr>
+@@class_start@@
+<tr>
+<td><a href="./ssds_cgi.cgi?file=ssds_class_fields.txt&set_class_num=@@class_num@@">@@class_num@@</a></td>
+<td><a href="./ssds_cgi.cgi?file=ssds_class_fields.txt&set_class_num=@@class_num@@">@@class_name@@</a></td>
+<td><a href="./ssds_cgi.cgi?file=ssds_class_fields.txt&set_class_num=@@class_num@@">@@class_id@@</a></td>
+<td><a href="./ssds_cgi.cgi?file=ssds_class_fields.txt&set_class_num=@@class_num@@">@@class_num_fields@@</a></td>
+<td><a href="./ssds_cgi.cgi?file=ssds_class_items.txt&set_class_num=@@class_num@@">@@class_num_items@@</a></td>
+</tr>
+@@class_end@@
+
+</table>
+
+ <h2> Create a New Class </h2>
+
+<form action=ssds_cgi.cgi method=GET>
+<table border=1>
+<tr><td>Class Name</td><td>ID</td></tr>
+<tr>
+<td><input type=text name=new_class_name value=""></td>
+<td><input type=text name=new_class_id value=""></td>
+
+</tr>
+
+</table>
+<input type=hidden name=file value=ssds_classes.txt>
+<input type=hidden name=add_class value=1>
+<input type=submit value=submit>
+<input type=reset value=reset>
+
+</form>
+@@done@@

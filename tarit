@@ -1,0 +1,28 @@
+DATE=`date +%y%m%d%H%M`
+
+TFILE=ssds_${DATE}.tar.gz
+PREF=user/ssds
+TDIR=../tars
+echo "creating ${TFILE}"
+
+mkdir -p ${TDIR}
+
+FILES="\
+${PREF}/*.c \
+${PREF}/*.c.inc \
+${PREF}/*.txt \
+${PREF}/Makefile \
+${PREF}/Makefile.ssds \
+${PREF}/*.h \
+${PREF}/README* \
+${PREF}/ssds.conf* \
+${PREF}/boa.conf* \
+${PREF}/mime.types \
+${PREF}/INSTALL \
+${PREF}/LICENSE \
+${PREF}/net-snmp \
+${PREF}/patches \
+${PREF}/run_boa \
+${PREF}/tarit"
+
+tar cvzf ${TDIR}/${TFILE} ${FILES}

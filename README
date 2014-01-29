@@ -1,0 +1,182 @@
+Basic SSDS system
+
+output of
+./ssds_test
+
+ No file (/etc/ssds.conf) - this is OK we pick up ./ssds.conf
+
+ SSDS has 4 classes
+ (0) class name (Alarms) id 1
+ (1) class name (Equations) id 2
+ (2) class name (Inputs) id 3
+ (3) class name (Outputs) id 4
+ Item (Alarm1.1) class (Alarms.1) num_fields 5
+  Field (InputAlarmValue) offset 0 type 2 (float) value 121.300003
+  Field (MaxAlarmValue) offset 4 type 2 (float) value 125.400002
+  Field (MinAlarmValue) offset 8 type 2 (float) value 15.500000
+  Field (HystAlarmValue) offset 12 type 2 (float) value 5.600000
+  Field (AlarmStatus) offset 16 type 1 (int) value 1234567
+ Item (Alarm2.2) class (Alarms.1) num_fields 5
+  Field (InputAlarmValue) offset 0 type 2 (float) value 221.300003
+  Field (MaxAlarmValue) offset 4 type 2 (float) value 225.399994
+  Field (MinAlarmValue) offset 8 type 2 (float) value 25.500000
+  Field (HystAlarmValue) offset 12 type 2 (float) value 5.600000
+  Field (AlarmStatus) offset 16 type 1 (int) value 1234567
+ SSDS class (Alarms.1) has 5 fields
+ field 0 name (InputAlarmValue) id 1 len 4
+ field 1 name (MaxAlarmValue) id 2 len 4
+ field 2 name (MinAlarmValue) id 3 len 4
+ field 3 name (HystAlarmValue) id 4 len 4
+ field 4 name (AlarmStatus) id 5 len 4
+ SSDS class (Alarms.1) has 4 items
+ item 0 name (Alarm1) id 1 data_idx 0
+ item 1 name (Alarm2) id 2 data_idx 20
+ item 2 name (Alarm3) id 3 data_idx 40
+ item 3 name (Alarm4) id 4 data_idx 60
+ Item (Alarm1.1) class (Alarms.1) num_fields 5
+  Field (InputAlarmValue) offset 0 type 2 (float) value 121.300003
+  Field (MaxAlarmValue) offset 4 type 2 (float) value 125.400002
+  Field (MinAlarmValue) offset 8 type 2 (float) value 15.500000
+  Field (HystAlarmValue) offset 12 type 2 (float) value 5.600000
+  Field (AlarmStatus) offset 16 type 1 (int) value 1234567
+test_argc lbuf was (class:alarm:action:create_field:MaxAlarmValue:float:)
+ 0 (class)
+ 1 (alarm)
+ 2 (action)
+ 3 (create_field)
+ 4 (MaxAlarmValue)
+ 5 (float)
+ SDCS def size = 3192
+ SDCS data size = 208
+
+The following is a client/ server test
+
+first run ./ssds_server in the background
+
+ ./ssds_server &
+ Server ./ssds_server awaiting client on 0.0.0.0:4321
+[3] 6697
+poll timeout 0
+poll timeout 1
+
+The run the client
+The client will discover the database layout.
+
+./ssds_client
+
+ Client ./ssds_client attempting to connect to 127.0.0.1:4321
+ Client ./ssds_client socket set up
+ Client ./ssds_client connected
+ Client num_classes is 4
+ Client class name (Alarms) id 1
+ Client class (Alarms) id 1 num fields 5 num items 4
+ Client class name (Equations) id 2
+ Client class (Equations) id 2 num fields 4 num items 4
+ Client class name (Inputs) id 3
+ Client class (Inputs) id 3 num fields 8 num items 1
+ Client class name (Outputs) id 4
+ Client class (Outputs) id 4 num fields 8 num items 1
+ Client num_classes is 4
+SDCS num_classes 4
+ Client class name (Alarms) id 1
+...[0] Class Alarms id 1 num_items 4 num_fields 5
+ ..  Client field data class name (Alarms) id 1 field AlarmStatus (id 5)
+ ..  Client field data class name (Alarms) id 1 field HystAlarmValue (id 4)
+ ..  Client field data class name (Alarms) id 1 field MinAlarmValue (id 3)
+ ..  Client field data class name (Alarms) id 1 field MaxAlarmValue (id 2)
+ ..  Client field data class name (Alarms) id 1 field InputAlarmValue (id 1)
+ ..  Client item data class name (Alarms) id 1 item Alarm1 (id 1)
+ ..  Client item data class name (Alarms) id 1 item Alarm2 (id 2)
+ ..  Client item data class name (Alarms) id 1 item Alarm3 (id 3)
+ ..  Client item data class name (Alarms) id 1 item Alarm4 (id 4)
+ Client class name (Equations) id 2
+...[1] Class Equations id 2 num_items 4 num_fields 4
+ ..  Client field data class name (Equations) id 2 field SlopeEquationValue (id 4)
+ ..  Client field data class name (Equations) id 2 field OffsetEquationValue (id 3)
+ ..  Client field data class name (Equations) id 2 field OutputEquationValue (id 2)
+ ..  Client field data class name (Equations) id 2 field InputEquationValue (id 1)
+ ..  Client item data class name (Equations) id 2 item Equation1 (id 1)
+ ..  Client item data class name (Equations) id 2 item Equation2 (id 2)
+ ..  Client item data class name (Equations) id 2 item Equation3 (id 3)
+ ..  Client item data class name (Equations) id 2 item Equation4 (id 4)
+ Client class name (Inputs) id 3
+...[2] Class Inputs id 3 num_items 1 num_fields 8
+ ..  Client field data class name (Inputs) id 3 field Port_A_7 (id 8)
+ ..  Client field data class name (Inputs) id 3 field Port_A_6 (id 7)
+ ..  Client field data class name (Inputs) id 3 field Port_A_5 (id 6)
+ ..  Client field data class name (Inputs) id 3 field Port_A_4 (id 5)
+ ..  Client field data class name (Inputs) id 3 field Port_A_3 (id 4)
+ ..  Client field data class name (Inputs) id 3 field Port_A_2 (id 3)
+ ..  Client field data class name (Inputs) id 3 field Port_A_1 (id 2)
+ ..  Client field data class name (Inputs) id 3 field Port_A_0 (id 1)
+ ..  Client item data class name (Inputs) id 3 item Port_A (id 1)
+ Client class name (Outputs) id 4
+...[3] Class Outputs id 4 num_items 1 num_fields 8
+ ..  Client field data class name (Outputs) id 4 field Port_B_7 (id 8)
+ ..  Client field data class name (Outputs) id 4 field Port_B_6 (id 7)
+ ..  Client field data class name (Outputs) id 4 field Port_B_5 (id 6)
+ ..  Client field data class name (Outputs) id 4 field Port_B_4 (id 5)
+ ..  Client field data class name (Outputs) id 4 field Port_B_3 (id 4)
+ ..  Client field data class name (Outputs) id 4 field Port_B_2 (id 3)
+ ..  Client field data class name (Outputs) id 4 field Port_B_1 (id 2)
+ ..  Client field data class name (Outputs) id 4 field Port_B_0 (id 1)
+ ..  Client item data class name (Outputs) id 4 item Port_B (id 1)
+
+That's it for now
+
+Here is the config file
+this shows the instructions given to the database to set it up.
+
+=========================================
+class:Alarms:action:create_class:id:1:
+
+class:Alarms:action:create_field:field:InputAlarmValue:type:float:id:1:
+class:Alarms:action:create_field:field:MaxAlarmValue:type:float:id:2:
+class:Alarms:action:create_field:field:MinAlarmValue:type:float:id:3:
+class:Alarms:action:create_field:field:HystAlarmValue:type:float:id:4:
+class:Alarms:action:create_field:field:AlarmStatus:type:int:id:5:
+
+class:Alarms:action:create_item:item:Alarm1:id:1:
+class:Alarms:action:create_item:item:Alarm2:id:2:
+class:Alarms:action:create_item:item:Alarm3:id:3:
+class:Alarms:action:create_item:item:Alarm4:id:4:
+
+class:Equations:action:create_class:id:2:
+
+class:Equations:action:create_field:field:InputEquationValue:type:float:id:1:
+class:Equations:action:create_field:field:OutputEquationValue:type:float:id:2:
+class:Equations:action:create_field:field:OffsetEquationValue:type:float:id:3:
+class:Equations:action:create_field:field:SlopeEquationValue:type:float:id:4:
+
+class:Equations:action:create_item:item:Equation1:id:1:
+class:Equations:action:create_item:item:Equation2:id:2:
+class:Equations:action:create_item:item:Equation3:id:3:
+class:Equations:action:create_item:item:Equation4:id:4:
+
+class:Inputs:action:create_class:id:3:
+
+class:Inputs:action:create_field:field:Port_A_0:type:int:id:1:
+class:Inputs:action:create_field:field:Port_A_1:type:int:id:2:
+class:Inputs:action:create_field:field:Port_A_2:type:int:id:3:
+class:Inputs:action:create_field:field:Port_A_3:type:int:id:4:
+class:Inputs:action:create_field:field:Port_A_4:type:int:id:5:
+class:Inputs:action:create_field:field:Port_A_5:type:int:id:6:
+class:Inputs:action:create_field:field:Port_A_6:type:int:id:7:
+class:Inputs:action:create_field:field:Port_A_7:type:int:id:8:
+
+class:Inputs:action:create_item:item:Port_A:id:1:
+
+class:Outputs:action:create_class:id:4:
+
+class:Outputs:action:create_field:field:Port_B_0:type:int:id:1:
+class:Outputs:action:create_field:field:Port_B_1:type:int:id:2:
+class:Outputs:action:create_field:field:Port_B_2:type:int:id:3:
+class:Outputs:action:create_field:field:Port_B_3:type:int:id:4:
+class:Outputs:action:create_field:field:Port_B_4:type:int:id:5:
+class:Outputs:action:create_field:field:Port_B_5:type:int:id:6:
+class:Outputs:action:create_field:field:Port_B_6:type:int:id:7:
+class:Outputs:action:create_field:field:Port_B_7:type:int:id:8:
+
+class:Outputs:action:create_item:item:Port_B:id:1:
+
+=========================================

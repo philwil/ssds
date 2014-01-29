@@ -1,0 +1,46 @@
+<!--/*
+ * class_items
+ * displays class items with links
+ * relies on set_class_num=xx in query string
+ * -->
+ <h1>System Name @@sys_name@@ </h1>
+<p> More cgi examples
+ <h2> Class @@class_name@@ item(s) </h2>
+<p>Class @@class_name@@ has @@class_num_items@@ items </h2>
+<p> First a simple list
+<ul>
+@@class_items_start@@
+ <li>  item [@@item_num@@] name:<b>@@item_name@@</b>  id:<b>@@item_id@@</b></li>
+@@classs_items_end@@
+</ul>
+
+<p> Next a table with links to full item details
+<table border=1><tr>
+<tr><td>Item Name</td></tr>
+@@class_items_start@@
+<tr><td><a href="./ssds_cgi.cgi?file=ssds_item_fields.txt&set_class_num=@@class_num@@&set_item_num=@@item_num@@">@@item_name@@</a></td></tr>
+@@classs_items_end@@
+</table>
+
+ <h2> Create a Class Item </h2>
+
+<form action=ssds_cgi.cgi method=GET>
+<table border=1>
+<tr><td>Item Name</td><td>ID</td></tr>
+<tr>
+<td><input type=text name=new_item_name value=""></td>
+<td><input type=text name=new_item_id value=""></td>
+
+</tr>
+
+</table>
+<input type=hidden name=file value=ssds_class_items.txt>
+<input type=hidden name=class_name value=@@class_name@@>
+<input type=hidden name=set_class_num value=@@class_num@@>
+<input type=hidden name=add_item value=1>
+<input type=submit value=submit>
+<input type=reset value=reset>
+
+</form>
+
+@@done@@
